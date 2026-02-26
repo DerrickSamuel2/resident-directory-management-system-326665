@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import Integer, String, Text
+from sqlalchemy import BigInteger, Boolean, Integer, String, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -9,23 +9,29 @@ class Base(DeclarativeBase):
 
 
 class Resident(Base):
-    """Resident ORM model."""
+    """Resident ORM model (matches resident_directory_database/startup.sh schema)."""
 
     __tablename__ = "residents"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    first_name: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
-    last_name: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, index=True)
 
-    address: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    apartment: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    first_name: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    last_name: Mapped[str] = mapped_column(String, nullable=False, index=True)
 
-    phone: Mapped[str | None] = mapped_column(String(64), nullable=True)
-    email: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    unit_number: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
 
-    birth_date: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    address_line1: Mapped[str | None] = mapped_column(String, nullable=True)
+    address_line2: Mapped[str | None] = mapped_column(String, nullable=True)
+    city: Mapped[str | None] = mapped_column(String, nullable=True)
+    state: Mapped[str | None] = mapped_column(String, nullable=True)
+    postal_code: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    phone: Mapped[str | None] = mapped_column(String, nullable=True)
+    email: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    emergency_contact_name: Mapped[str | None] = mapped_column(String, nullable=True)
+    emergency_contact_phone: Mapped[str | None] = mapped_column(String, nullable=True)
+
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    photo_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)
-
-    # "created_at/updated_at" could exist in DB; keep model minimal for compatibility.
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)

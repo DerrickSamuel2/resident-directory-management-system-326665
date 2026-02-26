@@ -10,7 +10,7 @@ from src.api.schemas.auth import LoginRequest, TokenResponse
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
 # PUBLIC_INTERFACE

@@ -15,7 +15,7 @@ from src.api.services.residents import (
     update_resident_flow,
 )
 
-router = APIRouter(prefix="/residents", tags=["residents"])
+router = APIRouter(prefix="/api/residents", tags=["residents"])
 
 
 @router.get(
@@ -26,12 +26,22 @@ router = APIRouter(prefix="/residents", tags=["residents"])
     operation_id="residents_list",
 )
 def list_residents(
-    q: str | None = Query(None, description="Search term matched against name/address/email/phone"),
+    q: str | None = Query(
+        None,
+        description="Search term matched against name/address/email/phone/unit",
+        alias="q",
+    ),
+    query: str | None = Query(
+        None,
+        description="Alias for q (frontend compatibility).",
+        alias="query",
+    ),
     limit: int = Query(50, ge=1, le=200, description="Max number of records to return"),
     offset: int = Query(0, ge=0, description="Pagination offset"),
     db: Session = Depends(get_db),
 ) -> list[ResidentOut]:
-    req = ListResidentsRequest(q=q, limit=limit, offset=offset)
+    effective_q = q if q is not None else query
+    req = ListResidentsRequest(q=effective_q, limit=limit, offset=offset)
     return list_residents_flow(db, req)
 
 

@@ -26,7 +26,7 @@ def list_residents_flow(db: Session, req: ListResidentsRequest) -> list[Resident
     Canonical flow for listing/searching residents.
 
     Contract:
-      - q: if provided, performs a case-insensitive partial match on name/address/email/phone
+      - q: if provided, performs a case-insensitive partial match on name/address/email/phone/unit
       - limit/offset: pagination
       - returns: list of Resident ORM objects
     """
@@ -40,7 +40,12 @@ def list_residents_flow(db: Session, req: ListResidentsRequest) -> list[Resident
             or_(
                 Resident.first_name.ilike(like),
                 Resident.last_name.ilike(like),
-                Resident.address.ilike(like),
+                Resident.unit_number.ilike(like),
+                Resident.address_line1.ilike(like),
+                Resident.address_line2.ilike(like),
+                Resident.city.ilike(like),
+                Resident.state.ilike(like),
+                Resident.postal_code.ilike(like),
                 Resident.email.ilike(like),
                 Resident.phone.ilike(like),
             )

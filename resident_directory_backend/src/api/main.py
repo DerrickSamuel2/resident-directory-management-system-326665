@@ -83,8 +83,18 @@ def create_app() -> FastAPI:
     def health_check() -> dict:
         return {"message": "Healthy"}
 
+    # Primary (frontend-compatible) routes are under /api/*
     app.include_router(auth_router.router)
     app.include_router(residents_router.router)
+
+    # Backward-compatible mounts (non-/api) in case other tooling calls these paths.
+    from src.api.routers.auth import router as legacy_auth_router
+    from src.api.routers.residents import router as legacy_residents_router
+
+    legacy_auth_router.prefix = "/auth"
+    legacy_residents_router.prefix = "/residents"
+    app.include_router(legacy_auth_router)
+    app.include_router(legacy_residents_router)
 
     return app
 
